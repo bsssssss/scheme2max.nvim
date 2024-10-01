@@ -5,6 +5,10 @@ local config = {
 	port = 7777,
 }
 
+local keys = {
+	send_paragraph = "<D-e>",
+}
+
 local osc
 
 local function init_osc()
@@ -47,10 +51,6 @@ local function send_to_max(s)
 	end
 end
 
-local keys = {
-	send_paragraph = "<D-e>",
-}
-
 local function setup_keymaps()
 	vim.keymap.set({ "n", "i" }, keys.send_paragraph, M.send_paragraph)
 end
@@ -61,6 +61,7 @@ local function setup_autocmds()
 		callback = function()
 			init_osc()
 			vim.api.nvim_create_user_command("S2MSendParagraph", M.send_paragraph, {})
+			setup_keymaps()
 		end,
 	})
 end
@@ -72,10 +73,12 @@ end
 
 function M.setup(opts)
 	opts = opts or {}
+
 	config.addr = opts.addr or config.addr
 	config.port = opts.port or config.port
 	keys.send_paragraph = (opts.keys and opts.keys.send_paragraph) or keys.send_paragraph
-	setup_keymaps()
+
+	-- setup_keymaps()
 	setup_autocmds()
 end
 
